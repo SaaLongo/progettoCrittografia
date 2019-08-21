@@ -1,4 +1,4 @@
-numeroPrimo = 11
+numeroPrimo = 1
 
 
 """
@@ -46,9 +46,13 @@ def findGenerators(p):
             results[value] = value
 
         if checkArray(results,p) == True:
-           generators.append(x)
+           return x
 
-    generators.remove(0)
-    return generators
+    # se si giunge a questo punto vale a dire che non ci
+    # sono generatori
+    print ('per questo numero primo (',numeroPrimo,') non ci sono generatori')
 
-print ('il primo generatore trovato:',findGenerators(numeroPrimo))
+    return 0
+
+if (findGenerators(numeroPrimo) != 0):
+    print ('il primo generatore trovato:',findGenerators(numeroPrimo))
