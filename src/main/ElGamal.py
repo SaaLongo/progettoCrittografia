@@ -1,7 +1,6 @@
 import random
-from math import pow
-from src.main.CEOChiper import getGeneratorCEO
-from src.main.CEOChiper import getPrimeNumberCEO
+#from src.main.CEOChiper import getGeneratorCEO
+#from src.main.CEOChiper import getPrimeNumberCEO
 
 
 def gcd(a, b):
@@ -19,10 +18,10 @@ ovvero k e il numero primo scelto devono essere relativamente primi
 """
 
 
-def gen_key(q):
+def gen_key(q,alfaValue):
     key = random.randint(1, q)
     while gcd(q, key) != 1:
-        key = random.randint(1, q)
+        key = random.randint(alfaValue, q)
 
     return key
 
@@ -56,10 +55,11 @@ Algoritmo di ElGamal di cifratura asimmetrica
 """
 
 
-def encrypt(msg, q, h, g):
+def encrypt(msg, q, h, g,alfaValue):
     en_msg = []
 
-    k = gen_key(q)  # Private key for sender
+    k = gen_key(q,alfaValue)  # Private key for sender
+    betaValue = power(g, k, q)
     s = power(h, k, q)
     p = power(g, k, q)
 
@@ -100,16 +100,19 @@ def main():
     msg = 'encryption'
     print("Messaggio originale :", msg)
 
-    primeNumber = getPrimeNumberCEO()
-    generator = getGeneratorCEO()
+    #primeNumber = getPrimeNumberCEO()
+    #generator = getGeneratorCEO()
+    primeNumber = 0
+    generator = 0
 
     # valore k privato
     key = gen_key(primeNumber)
-    h = power(generator, key, primeNumber)
+    betaValue = power(generator, key, primeNumber)
+    print('numero primo usato: ',primeNumber)
     print("generatore usato : ", generator)
-    print("g^a vale : ", h)
+    print("g^a vale : ", betaValue)
 
-    en_msg, p = encrypt(msg, primeNumber, h, generator)
+    en_msg, p = encrypt(msg, primeNumber, betaValue, generator)
     dr_msg = decrypt(en_msg, p, key, primeNumber)
     dmsg = ''.join(dr_msg)
     print("Messaggio decifrato :", dmsg);
