@@ -1,6 +1,4 @@
 numeroPrimo = 1
-
-
 """
 Questa funzione inizializza l'array con tutti gli
 elementi a zero
@@ -54,5 +52,10 @@ def findGenerators(p):
 
     return 0
 
-if (findGenerators(numeroPrimo) != 0):
-    print ('il primo generatore trovato:',findGenerators(numeroPrimo))
+def main():
+    numeroPrimo = int(input())
+    if (findGenerators(numeroPrimo) != 0):
+        print ('il primo generatore trovato:',findGenerators(numeroPrimo))
+
+if __name__ == '__main__':
+    main()
