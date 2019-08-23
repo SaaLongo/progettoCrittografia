@@ -42,10 +42,15 @@ def subBytes(state):
 def subBytesInv(state):
     for i in range(len(state)):
         state[i] = sboxInv[state[i]]
+def main():
 
-state = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
-subBytes(state)
-print(state)
+        state = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
+        print(state)
+        subBytes(state)
+        print(state)
 
-subBytesInv(state)
-print(state)
+        subBytesInv(state)
+        print(state)
+
+if __name__ == '__main__':
+    main()
