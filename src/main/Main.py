@@ -1,46 +1,31 @@
 """
 Classe principale del sistema, fornisce i menu di avvio
 """
-import os
-
-import pygame
+import keyboard
+from src.main.Menu import Menu
 
 roles = ['CEO', 'HR', 'SUPERVISOR', 'CONSULTANT']
 
 
-def mainMenu(posArrow):
-    for index in range(0, len(roles)):
-        if (posArrow == index):
-            print("> ", roles[index])
-        else:
-            print("  ", roles[index])
+def mainMenu():
+    global roles
+    print('menu principale, premi spazio per scegliere:\n')
+    myMenu = Menu(roles)
 
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                exit()
-            elif event.type == pygame.KEYDOWN:
-                if posArrow == (len(roles) - 1):
-                    posArrow = 0
-                    mainMenu(posArrow)
-                else:
-                    posArrow = posArrow + 1
-                    mainMenu(posArrow)
-                    os.system('cls')
+    myMenu.show_menu()
+    keyboard.add_hotkey('up', myMenu.up)
+    keyboard.add_hotkey('down', myMenu.down)
+    keyboard.add_hotkey('a', lambda: myMenu.enter())
 
-            elif event.type == pygame.KEYUP:
-                if posArrow == 0:
-                    posArrow = len(roles) - 1
-                    mainMenu(posArrow)
-                else:
-                    posArrow = posArrow - 1
-                    mainMenu(posArrow)
+    keyboard.wait('a', lambda: myMenu.enter())
+
+    print('selection is: ', myMenu.selected)
 
 
 def main():
-    posArrow = 0
-    pygame.init()
-    mainMenu(posArrow)
+
+    #mostra il menu iniziale, dove propone i ruoli
+    mainMenu()
 
 
 if __name__ == '__main__':
