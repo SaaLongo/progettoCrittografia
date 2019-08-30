@@ -18,11 +18,12 @@ ovvero k e il numero primo scelto devono essere relativamente primi
 """
 
 
-def gen_key(q,alfaValue):
+def gen_key(q):
     key = random.randint(1, q)
     while gcd(q, key) != 1:
-        key = random.randint(alfaValue, q)
+        key = random.randint(1, q)
 
+    print ("la key vale: ",key)
     return key
 
 
@@ -55,11 +56,9 @@ Algoritmo di ElGamal di cifratura asimmetrica
 """
 
 
-def encrypt(msg, q, h, g,alfaValue):
+def encrypt(msg, q, h, g, gammaValue,k):
     en_msg = []
 
-    k = gen_key(q,alfaValue)  # Private key for sender
-    betaValue = power(g, k, q)
     s = power(h, k, q)
     p = power(g, k, q)
 
@@ -69,7 +68,7 @@ def encrypt(msg, q, h, g,alfaValue):
     print("g^k used : ", p)
     print("g^ak used : ", s)
     for i in range(0, len(en_msg)):
-        en_msg[i] = s * ord(en_msg[i])
+        en_msg[i] = (s * ord(en_msg[i])) + gammaValue
 
     print('messaggio cifrato: ', en_msg)
 
@@ -85,11 +84,11 @@ Algoritmo di ElGamal di decifratura asimmetrica
 
 """
 
-def decrypt(en_msg, p, key, q):
+def decrypt(en_msg, p, key, q, gammaValue):
     dr_msg = []
     h = power(p, key, q)
     for i in range(0, len(en_msg)):
-        dr_msg.append(chr(int(en_msg[i] / h)))
+        dr_msg.append(chr(int((en_msg[i]-gammaValue) / h)))
 
     return dr_msg
 
@@ -100,20 +99,19 @@ def main():
     msg = 'encryption'
     print("Messaggio originale :", msg)
 
-    #primeNumber = getPrimeNumberCEO()
-    #generator = getGeneratorCEO()
-    primeNumber = 0
-    generator = 0
+    primeNumber = 4549
+    generator = 6
 
     # valore k privato
     key = gen_key(primeNumber)
     betaValue = power(generator, key, primeNumber)
+    gammaValue = 100
     print('numero primo usato: ',primeNumber)
     print("generatore usato : ", generator)
     print("g^a vale : ", betaValue)
 
-    en_msg, p = encrypt(msg, primeNumber, betaValue, generator)
-    dr_msg = decrypt(en_msg, p, key, primeNumber)
+    en_msg, p = encrypt(msg, primeNumber, betaValue, generator,gammaValue,key)
+    dr_msg = decrypt(en_msg, p, key, primeNumber,gammaValue)
     dmsg = ''.join(dr_msg)
     print("Messaggio decifrato :", dmsg);
 
