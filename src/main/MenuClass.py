@@ -4,10 +4,11 @@ import keyboard
 
 class Menu:
 
-    def __init__(self, newArray):
+    def __init__(self, newArray, msg):
         self.array = newArray
         self.selected = 0
         self.iterate = True
+        self.message = msg
 
     def setArray(self,myArray):
         global array
@@ -17,7 +18,7 @@ class Menu:
 
     def show_menu(self):
         os.system('clear')
-        print("Scegli un'opzione:")
+        print(self.message)
         for i in range(0, len(self.array)):
             print("{1} {0}. ".format(i, ">" if self.selected == i else " ", "<" if self.selected == i else " "), self.array[i])
 
@@ -35,9 +36,6 @@ class Menu:
         self.selected += 1
         self.show_menu()
 
-    def enter(self):
-        self.iterate = False
-        self.show_menu()
 
 """
 main di testing
@@ -49,14 +47,13 @@ def main():
     myMenu.show_menu()
     keyboard.add_hotkey('up', myMenu.up)
     keyboard.add_hotkey('down', myMenu.down)
-    keyboard.add_hotkey('a', lambda:myMenu.enter())
+    keyboard.add_hotkey('e', myMenu.enter())
 
-    keyboard.wait('a', lambda: myMenu.enter())
+    keyboard.wait('e', lambda: myMenu.enter())
+    keyboard.wait('E', lambda: myMenu.enter())
 
 
-
-    print ('selection is: ', myMenu.selected)
-
+    print ('Hai scelto: ', myMenu.array[myMenu.selected - 1])
 
 
 
