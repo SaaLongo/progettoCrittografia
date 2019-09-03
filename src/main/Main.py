@@ -1,3 +1,5 @@
+from src.main.SQLConnector import checkUser
+
 """
 Classe principale del sistema, fornisce i menu di avvio
 """
@@ -18,22 +20,24 @@ def mainMenu():
     keyboard.add_hotkey('down', myMenu.down)
 
     keyboard.wait('e')
-    #TODO: close keyboard stream
-    print('Hai scelto: ', roles[myMenu.selected-1])
-    return roles[myMenu.selected - 1]
+    keyboard.remove_all_hotkeys()
+    keyboard.press('delete')
+
+    print('Hai scelto: ', roles[myMenu.selected])
+    print('***********************')
+    return roles[myMenu.selected]
 
 
 def main():
 
     #mostra il menu iniziale, dove propone i ruoli
-    mainMenu()
+    roleUsed = mainMenu()
 
-    print ('inserisci le credenziali per il ruolo scelto.')
+    print ('inserisci le credenziali per il ruolo ',roleUsed," :\n")
 
     nomeUtente = str(input('nomeUtente: '))
     matricola = int(input('matricola: '))
     secretKey = str(input('chiave segreta: '))
-
 
 
 

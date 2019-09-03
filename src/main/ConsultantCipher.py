@@ -7,7 +7,7 @@ from src.main.ElGamal import key
 
 # questo valore è utilizzato nel momento in cui si trasformano
 # gli attributi di un ceo in un numero
-deltaCEO = 20
+deltaC = 476
 
 """
 Questo metodo è utile per trasformare le lettere in numeri, entra in gioco
@@ -17,7 +17,7 @@ def stringToNumbers(string):
     outputValue = []
     finalValue = 1
     for character in string:
-        number = ord(character) - deltaCEO
+        number = ord(character) - deltaC
         outputValue.append(number)
 
     for index in range (1,len(outputValue)-1):
@@ -43,13 +43,13 @@ le credenziali al CEO
 @:param publicKey = chiave pubblica del CEO
         plaintext = testo in chiaro da cifrare
 """
-def encryptCEO(plaintext, key, gammaValue):
+def encryptC(plaintext, key, gammaValue):
     betaValue = power(g, key, q)
     en_msg, p = encrypt(plaintext, betaValue, gammaValue, key)
 
     return en_msg,p
 
-def decryptCEO(en_msg, p, gammaValue, key):
+def decryptC(en_msg, p, gammaValue, key):
     dr_msg = decrypt(en_msg, p, key,gammaValue)
 
     return dr_msg
@@ -63,9 +63,9 @@ def main():
     gammaValue = generateGammaValue(nomeUtente,matricola,secretKey)
     msg = 'Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa.'
     print ("messaggio in chiaro:", msg)
-    en_msg, p = encryptCEO(msg, key,gammaValue)
+    en_msg, p = encryptC(msg, key,gammaValue)
 
-    dr_msg = decryptCEO(en_msg, p, gammaValue, key)
+    dr_msg = decryptC(en_msg, p, gammaValue, key)
     dmsg = ''.join(dr_msg)
     print("Messaggio decifrato :", dmsg);
 

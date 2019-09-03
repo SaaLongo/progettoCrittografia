@@ -1,37 +1,25 @@
-import random
-#from src.main.CEOChiper import getGeneratorCEO
-#from src.main.CEOChiper import getPrimeNumberCEO
 
 
-def gcd(a, b):
-    if a < b:
-        return gcd(b, a)
-    elif a % b == 0:
-        return b;
-    else:
-        return gcd(b, a % b)
+# i numeri primi devono necessariamente essere composti di almeno 8 bit: questo
+# è necessario al fine di poter cifrare anche le stringhe, si farà uso dello
+# stesso numero primo per tutti i cifrari, cambierà solamente il gammaValue
+q = 4549
+
+# generatore trovato tramite il modulo "findGenerators.py"
+g = 6
 
 
-"""
-Metodo per generare un k tale che gcd(k, numero primo scelto) sia primo;
-ovvero k e il numero primo scelto devono essere relativamente primi
-"""
-
-
-def gen_key(q):
-    key = random.randint(1, q)
-    while gcd(q, key) != 1:
-        key = random.randint(1, q)
-
-    print ("la key vale: ",key)
-    return key
+# il valore della key rappresenta la chiave privata, in tal caso la chiave privata
+# sarà unica per tutti gli utenti, l'obiettivo di questa soluzione è quello di
+# sfruttare la sicurezza e le performance dei cifrari asimmetrici associandolo
+# alla versatilità di quelli simmetrici. L'ABE sarà realizzata attraverso l'uso
+# del gammaValue
+key = 798
 
 
 """
 Metodo di esponenziazione modulare
 """
-
-
 def power(a, b, c):
     x = 1
     y = a
@@ -56,7 +44,7 @@ Algoritmo di ElGamal di cifratura asimmetrica
 """
 
 
-def encrypt(msg, q, h, g, gammaValue,k):
+def encrypt(msg, h, gammaValue,k):
     en_msg = []
 
     s = power(h, k, q)
@@ -84,7 +72,7 @@ Algoritmo di ElGamal di decifratura asimmetrica
 
 """
 
-def decrypt(en_msg, p, key, q, gammaValue):
+def decrypt(en_msg, p, key, gammaValue):
     dr_msg = []
     h = power(p, key, q)
     for i in range(0, len(en_msg)):
@@ -99,19 +87,15 @@ def main():
     msg = 'encryption'
     print("Messaggio originale :", msg)
 
-    primeNumber = 4549
-    generator = 6
 
-    # valore k privato
-    key = gen_key(primeNumber)
-    betaValue = power(generator, key, primeNumber)
+    betaValue = power(g, key, q)
     gammaValue = 100
-    print('numero primo usato: ',primeNumber)
-    print("generatore usato : ", generator)
+    print('numero primo usato: ',q)
+    print("generatore usato : ", g)
     print("g^a vale : ", betaValue)
 
-    en_msg, p = encrypt(msg, primeNumber, betaValue, generator,gammaValue,key)
-    dr_msg = decrypt(en_msg, p, key, primeNumber,gammaValue)
+    en_msg, p = encrypt(msg, betaValue, gammaValue,key)
+    dr_msg = decrypt(en_msg, p, key, gammaValue)
     dmsg = ''.join(dr_msg)
     print("Messaggio decifrato :", dmsg);
 
