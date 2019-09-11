@@ -1,4 +1,5 @@
-import MySQLdb
+
+from MySQLdb import connect
 from MySQLdb import Error
 
 def encryptDB():
@@ -6,10 +7,10 @@ def encryptDB():
 
 def accessDB():
     try:
-        db = MySQLdb.connect(host="localhost",
-                             user="root",
-                             passwd="password",
-                             database="progettoCritto")  # name of the data base
+        db = connect(host="localhost",
+                     user="root",
+                     passwd="password",
+                     database="progettoCritto")  # name of the data base
 
         # you must create a Cursor object. It will let
         #  you execute all the queries you need
@@ -52,6 +53,3 @@ def executeQuery(query):
 
 def fetchCredentials(username, role, targetRole):
     pass
-    ##questa funzione deve permettere ad un utente di livello più alto
-    ## di leggere le info alle tabelle di livello più basso, recuperando le credenziali ai livelli più
-    ##bassi
