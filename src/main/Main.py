@@ -1,7 +1,8 @@
 import os
 from pynput.keyboard import Key, Listener
 
-import SQLConnector
+from src.main.SQLConnector import accessDB
+from src.main.SQLConnector import checkUser
 from pip._vendor.distlib.compat import raw_input
 
 
@@ -10,7 +11,7 @@ Classe principale del sistema, fornisce i menu di avvio
 """
 
 roles = ['CEO', 'HR', 'SUPERVISOR', 'CONSULTANT']
-azioniConcesse=['Inserisci utente', 'visualizza dati', 'modifica dati']
+azioniConcesse=['visualizza dati', 'modifica dati']
 
 class Menu:
 
@@ -29,7 +30,8 @@ class Menu:
 
 
     def show_menu(self):
-        os.system('clear')
+        clear = "\n" * 100
+        print (clear)
         print(self.message)
         for i in range(0, len(self.array)):
             print("{1} {0}. ".format(i, ">" if self.selected == i else " ", "<" if self.selected == i else " "), self.array[i])
@@ -60,23 +62,38 @@ class Menu:
 
 def mainMenu():
     global roles
-    print('MENU PRINCIPALE...\n')
-    myArray = ['CEO', 'HR', 'SUPERVISOR', 'CONSULTANT']
-    myMenu = Menu(myArray, 'premi e per scegliere:')
+    myMenu = Menu(roles, 'Accedi con il tuo ruolo, premi "invio" per scegliere:')
 
     myMenu.show_menu()
-    # Collect events until released
 
     with Listener(
             on_press=myMenu.on_press,
             on_release=myMenu.on_release) as listener:
         listener.join()
 
-    print('Hai scelto: ', myMenu.array[myMenu.selected])
+    print('Hai scelto il ruolo: ', myMenu.array[myMenu.selected])
 
 
     print('***********************')
     return roles[myMenu.selected]
+
+def actionMenu():
+    global azioniConcesse
+    menuAzioni = Menu(azioniConcesse, 'Queste sono le azioni concesse, premi enter per scegliere: ')
+
+    menuAzioni.show_menu()
+
+    with Listener(
+            on_press=menuAzioni.on_press,
+            on_release=menuAzioni.on_release) as listener:
+        listener.join()
+
+    if menuAzioni.selected == 0:
+        print ('hai deciso di visualizzare i dati, queste sono le tabelle che puoi consultare:')
+        #TODO mostra tabelle visibili
+    else:
+        print('hai deciso di inserire nuovi  dati, queste sono le tabelle che puoi modificare:')
+        #TODO mostra tabelle editabili
 
 
 def main():
@@ -84,21 +101,23 @@ def main():
     #mostra il menu iniziale, dove propone i ruoli
     roleUsed = mainMenu()
 
-    print ('inserisci le credenziali per il ruolo ',roleUsed," :")
+    print ('inserisci le credenziali per il ruolo ',roleUsed,":")
 
     nomeUtente = str(raw_input("nomeUtente: "))
     matricola = int(raw_input('matricola: '))
     secretKey = str(raw_input('chiave segreta: '))
 
-    #cur = accessDB()
+    cur = accessDB()
 
-    #result = checkUser(roleUsed, nomeUtente, matricola, secretKey, cur)
+    result = checkUser(roleUsed, nomeUtente, matricola, secretKey, cur)
 
-    result = True
-    if result == True:
-        print("success")
+    if (result == True):
+        actionMenu()
     else:
-        print("defeat")
+        print ('esecuzione interrotta .....')
+
+
+
 
 
 if __name__ == '__main__':

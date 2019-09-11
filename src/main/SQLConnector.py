@@ -1,4 +1,3 @@
-
 from MySQLdb import connect
 from MySQLdb import Error
 
@@ -24,28 +23,35 @@ def accessDB():
 
 
 def checkUser(role, username, matricola, secretKey, cur):
-    query = "select * from "+role+" where matricola = "+matricola
+    query = "select * from "
+    query += role
+    query += " where matricola="
+    query+=str(matricola)
     cur.execute(query)
     row = cur.fetchall()
     if (len(row) == 0):
-        #se non ci sono corrispondenze
-        print ('nessuna corrispondenza nel database')
+        #se non ci sono corrispondenze per la matricola
+        print ('nessuna corrispondenza nel database, le credenziali inserite non sono valide')
         return False
     else:
-        print ('corrispondenza trovata! verifico le altre credenziali')
-        if (row[3] == matricola and row[2]==username and row[4]==secretKey):
-            print('verifica completata, adesso puoi accedere, ', row[1])
-            return True
+        print ('corrispondenza trovata! verifico le altre credenziali...')
+        if (row[0][3] == matricola):
+            if (row[0][2] == username):
+                if (row[0][4] == secretKey):
+                    print('verifica completata, adesso puoi accedere, ', row[0][1], '!')
+                    return True
+                else:
+                    print ('secret key errata! Riprova')
+                    return False
+
+            else:
+                print ('nome utente non valido! Riprova')
+                return False
         else:
-            print('verifica completata, alcune informazioni non sono correte. Riprova')
             return False
 
 
-
 def insertInfo(query):
-    pass
-
-def deleteInfo(query):
     pass
 
 def executeQuery(query):
