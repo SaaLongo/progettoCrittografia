@@ -1,6 +1,8 @@
 from MySQLdb import connect
 from MySQLdb import Error
 
+from prettytable import PrettyTable
+
 def encryptDB():
     pass
 
@@ -49,6 +51,75 @@ def checkUser(role, username, matricola, secretKey, cur):
                 return False
         else:
             return False
+
+def showVisibileTables(roleNumber, cursor, roles):
+    for index in range(roleNumber,len(roles)):
+        query = "select * from "
+        query += roles[index]
+        cursor.execute(query)
+        row = cursor.fetchall()
+
+
+        #recuepero i nomi delle colonne
+        queryCol = "show columns from "
+        queryCol += roles[index]
+        cursor.execute(queryCol)
+        colNames = cursor.fetchall()
+
+        print('\ntabella {0}: '.format(roles[index]))
+
+        if (len(row) == 0):
+            print('tabella {0} vuota'.format(roles[index]))
+        else:
+            attributes = []
+            for l in range(0, len(colNames)):
+                attributes.append(colNames[l][0])
+
+
+            table = PrettyTable(attributes)
+            #TODO quando ci sarà il key manager è necessario filtrare le tuple mostrate
+            for i in range (0, len(row)):
+                table.add_row(row[i])
+
+            print (table)
+        print('\n***********************')
+
+
+def showEditableTables(roleNumber, cursor, roles):
+
+    print ('puoi modificare le seguenti tabelle: ')
+
+    if roleNumber == len(roles) + 1:
+        print ('tabella CONSULTANT, ecco la struttura:')
+
+        #recuepero i nomi delle colonne
+        queryCol = "show columns from CONSULTANT"
+        cursor.execute(queryCol)
+        colNames = cursor.fetchall()
+
+        attributes = []
+        for l in range(0, len(colNames)):
+            attributes.append(colNames[l][0])
+
+        table = PrettyTable(attributes)
+        print (table)
+
+    for index in range(roleNumber+1, len(roles)):
+        print ('tabella {0}, ecco la struttura: \n'.format(roles[index]))
+
+        # recuepero i nomi delle colonne
+        queryCol = "show columns from "
+        queryCol += roles[index]
+        cursor.execute(queryCol)
+        colNames = cursor.fetchall()
+
+        attributes = []
+        for l in range(0, len(colNames)):
+            attributes.append(colNames[l][0])
+
+        table = PrettyTable(attributes)
+        print(table)
+        print('\n***********************')
 
 
 def insertInfo(query):
