@@ -1,10 +1,12 @@
 import os
 from pynput.keyboard import Key, Listener
+import string
 
 from src.main.SQLConnector import accessDB
 from src.main.SQLConnector import checkUser
 from src.main.SQLConnector import showVisibileTables
 from src.main.SQLConnector import showEditableTables
+from src.main.SQLConnector import editTable
 from pip._vendor.distlib.compat import raw_input
 
 
@@ -121,6 +123,15 @@ def main():
             print('hai deciso di inserire nuovi  dati!\n')
             print('***********************')
             showEditableTables(roleNumber,cur, roles)
+            tabToEdit = str(raw_input('quale tabella vuoi modificare? '))
+            tabToEdit.upper()
+            print (tabToEdit)
+
+            if tabToEdit== roles[0] or tabToEdit== roles[1] or tabToEdit== roles[2] or tabToEdit== roles[3]:
+                editTable(tabToEdit, cur)
+            else:
+                print ('tabella inesistente...')
+
 
     else:
         print ('esecuzione interrotta .....')

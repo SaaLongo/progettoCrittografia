@@ -1,5 +1,6 @@
 from MySQLdb import connect
 from MySQLdb import Error
+from pip._vendor.distlib.compat import raw_input
 
 from prettytable import PrettyTable
 
@@ -121,12 +122,49 @@ def showEditableTables(roleNumber, cursor, roles):
         print(table)
         print('\n***********************')
 
+def editTable(role, cursor):
+    # recuepero i nomi delle colonne
+    queryCol = "show columns from "
+    queryCol += role
+    cursor.execute(queryCol)
+    colNames = cursor.fetchall()
 
-def insertInfo(query):
-    pass
+    attributes = []
+    for l in range(0, len(colNames)):
+        attributes.append(colNames[l][0])
 
-def executeQuery(query):
-    pass
+    values = []
+
+    print('\n***********************')
+    print ('stai modificando la tabella {0} inserisci i valori della nuova tupla\n'.format(role))
+
+    #raccolta dei valori da inserire
+    for i in range(0, len(attributes)):
+        val = raw_input('{0}: '.format(attributes[i]))
+        values.append(val)
+
+    #creazione della prima parte della stringa query
+    insertion = 'insert into {0} ('.format(role)
+    for index in range(0, len(attributes)):
+        insertion+= attributes[index]
+        if index != len(attributes)-1:
+            insertion += ', '
+    insertion += ') values ('
+
+    #inserimento dei valori nella query
+    for t in range(0, len(values)):
+        insertion += "'"
+        insertion+= values[t]
+        insertion += "'"
+        if t != len(values)-1:
+            insertion += ', '
+
+    insertion += ') '
+
+    print (insertion)
+
+    cursor.execute(insertion)
+
 
 def fetchCredentials(username, role, targetRole):
     pass
