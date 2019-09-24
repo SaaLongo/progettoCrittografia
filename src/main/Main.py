@@ -84,9 +84,7 @@ def mainMenu():
     print('***********************')
     return roles[myMenu.selected], roleNumber
 
-def actionMenu(
-
-):
+def actionMenu():
     global azioniConcesse
     menuAzioni = Menu(azioniConcesse, 'Queste sono le azioni concesse, inserisci il numero per scegliere: ', False)
 
@@ -96,8 +94,6 @@ def actionMenu(
     choice = int(raw_input("scelta: "))
 
     return choice
-
-
 
 def main():
 

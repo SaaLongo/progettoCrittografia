@@ -16,6 +16,8 @@ g = 6
 # del gammaValue
 key = 798
 
+def getKey():
+    return key
 
 """
 Metodo di esponenziazione modulare

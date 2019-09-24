@@ -1,11 +1,67 @@
 from MySQLdb import connect
 from MySQLdb import Error
 from pip._vendor.distlib.compat import raw_input
+from src.main.CEOChiper import generateGammaValue
+from src.main.CEOChiper import encryptCEO
+from src.main.ElGamal import key
 
 from prettytable import PrettyTable
 
-def encryptDB():
-    pass
+def encryptCEORow(nomeUtente, matricola, secretKey, cur):
+    #il CEO è sempre uno, quindi la query sarà fatta direttamente in questo metodo
+
+    query = "select * from ceo;"
+    cur.execute(query)
+    row = cur.fetchall()
+
+    gammaValue = generateGammaValue(nomeUtente, matricola, secretKey)
+
+    #cancello la tupla del ceo
+    query = "delete from ceo where matricola = {0}".format(row[0][3])
+    cur.execute(query)
+
+    #cripto tutti i valori e li inserisco in un vettore
+    en_values = []
+    for index in range (len(row)):
+        en_msg, p = encryptCEO(row[index], key, gammaValue)
+        string = "{0} /// {1}".format(en_msg,p)
+        en_values[index] = string
+
+    query = "insert into ceo(cognome, nome, username, matricola, secretKey) values ("
+    for l in range(len(en_values)):
+        query += "'"
+        query += en_values[l]
+        query += "'"
+        if index == len(en_values) - 1:
+            query += ","
+    cur.execute(query)
+
+
+
+
+def encryptDB(row, cur):
+    nomeUtente = str(input('nomeUtente: '))
+    matricola = int(input('matricola: '))
+    secretKey = str(input('chiave segreta: '))
+
+
+    encryptCEORow(nomeUtente, matricola, secretKey,  cur)
+
+def main():
+    cur = accessDB()
+    query = "select * from ceo"
+    cur.execute(query)
+    row = cur.fetchall()
+    for index in range(0, len(row)):
+        print (row[index])
+        encryptDB(row, cur)
+
+    query = "select * from ceo"
+    cur.execute(query)
+    row = cur.fetchall()
+    for index in range(0, len(row)):
+        print (row[index])
+
 
 def accessDB():
     try:
@@ -14,8 +70,7 @@ def accessDB():
                      passwd="password",
                      database="progettoCritto")  # name of the data base
 
-        # you must create a Cursor object. It will let
-        #  you execute all the queries you need
+        # il cursore permette di eseguire le query
         cur = db.cursor()
 
         return cur
@@ -54,6 +109,7 @@ def checkUser(role, username, matricola, secretKey, cur):
             return False
 
 def showVisibileTables(roleNumber, cursor, roles):
+
     for index in range(roleNumber,len(roles)):
         query = "select * from "
         query += roles[index]
@@ -75,7 +131,6 @@ def showVisibileTables(roleNumber, cursor, roles):
             attributes = []
             for l in range(0, len(colNames)):
                 attributes.append(colNames[l][0])
-
 
             table = PrettyTable(attributes)
             #TODO quando ci sarà il key manager è necessario filtrare le tuple mostrate
@@ -168,3 +223,6 @@ def editTable(role, cursor):
 
 def fetchCredentials(username, role, targetRole):
     pass
+
+if __name__ == '__main__':
+    main()
